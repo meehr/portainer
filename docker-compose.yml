@@ -1,0 +1,50 @@
+version: "3"
+
+volumes:
+  nextcloud:
+  nextcloud-data:
+  nextcloud-db:
+  nextcloud-app:
+
+networks:
+  nginx_proxy_frontend:
+    # add this if the network is already existing!
+    external: true
+  nginx_proxy_backend:
+    # add this if the network is already existing!
+    external: true
+
+services:
+
+  nextcloud-app:
+    image: nextcloud:latest
+    restart: always
+    volumes:
+      #- /opt/docker/nextcloud/next:/var/www/html
+      - /media/HDD1:/opt/phoenyx-cloud/data
+      - /media/HDD2:/opt/phoenyx-cloud/data2
+      - nextcloud:/var/www/html
+      #- nextcloud-app:/var/www/html/app
+      #- nextcloud-data:/opt/phoenyx-cloud/data2
+    environment:
+      - MYSQL_PASSWORD=xwmhP02WZ6rnUz5uzT9LIh7pROIqfr
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
+    networks:
+      - nginx_proxy_frontend
+      - nginx_proxy_backend
+
+  nextcloud-db:
+    image: mariadb:latest
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=OFF
+    volumes:
+      - nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=L5IQe29WPspWJmxjN7xxbqmFIDmuUZ
+      - MYSQL_PASSWORD=xwmhP02WZ6rnUz5uzT9LIh7pROIqfr
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - nginx_proxy_backend
