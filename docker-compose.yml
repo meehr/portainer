@@ -4,9 +4,9 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     restart: always
-    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    #command: -H tcp://tasks.agent:9001 --tlsskipverify
     volumes:
-      - portainer_data:/data
+      - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=portainer.phoenyx.me
@@ -15,7 +15,7 @@ services:
       - 8000:8000
       - 9443:9443
     networks:
-      - proxy_frontend
+      - nginx_proxy_frontend
       #- proxy_backend
       - agent_network
     deploy:
@@ -28,12 +28,12 @@ services:
 networks:
   agent_network:
     #external: true
-  proxy_frontend:
+  nginx_proxy_frontend:
     # add this if the network is already existing!
     external: true
-  # proxy_backend:
+  # nginx_proxy_backend:
     # add this if the network is already existing!
     # external: true
 
 volumes:
-   portainer_data:
+   data:
