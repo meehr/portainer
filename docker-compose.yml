@@ -1,50 +1,39 @@
-version: "3"
-
-volumes:
-  nextcloud:
-  nextcloud-data:
-  nextcloud-db:
-  nextcloud-app:
-
-networks:
-  nginx_proxy_frontend:
-    # add this if the network is already existing!
-    external: true
-  nginx_proxy_backend:
-    # add this if the network is already existing!
-    external: true
+version: '3.2'
 
 services:
-
-  nextcloud-app:
-    image: nextcloud:latest
+  portainer:
+    image: portainer/portainer-ce:latest
     restart: always
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
     volumes:
-      #- /opt/docker/nextcloud/next:/var/www/html
-      - /media/HDD1:/opt/phoenyx-cloud/data
-      - /media/HDD2:/opt/phoenyx-cloud/data2
-      - nextcloud:/var/www/html
-      #- nextcloud-app:/var/www/html/app
-      #- nextcloud-data:/opt/phoenyx-cloud/data2
+      - portainer_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - MYSQL_PASSWORD=xwmhP02WZ6rnUz5uzT9LIh7pROIqfr
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
+      - VIRTUAL_HOST=portainer.phoenyx.me
+      - VIRTUAL_PORT=9000
+    ports:
+      - 8000:8000
+      - 9443:9443
     networks:
-      - nginx_proxy_frontend
-      - nginx_proxy_backend
+      - proxy_frontend
+      #- proxy_backend
+      - agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
 
-  nextcloud-db:
-    image: mariadb:latest
-    restart: always
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=OFF
-    volumes:
-      - nextcloud-db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=L5IQe29WPspWJmxjN7xxbqmFIDmuUZ
-      - MYSQL_PASSWORD=xwmhP02WZ6rnUz5uzT9LIh7pROIqfr
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-    networks:
-      - nginx_proxy_backend
+
+networks:
+  agent_network:
+    #external: true
+  proxy_frontend:
+    # add this if the network is already existing!
+    external: true
+  # proxy_backend:
+    # add this if the network is already existing!
+    # external: true
+
+volumes:
+   portainer_data:
