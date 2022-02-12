@@ -8,21 +8,21 @@ services:
     volumes:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - VIRTUAL_HOST=portainer.phoenyx.me
-      - VIRTUAL_PORT=9000
-    ports:
-      - 8000:8000
-      - 9443:9443
+    #environment:
+    #  - VIRTUAL_HOST=portainer.phoenyx.me
+    #  - VIRTUAL_PORT=9000
+    #ports:
+      #- 8000:8000
+      #- 9443:9443
     networks:
       - nginx_proxy_frontend
       #- proxy_backend
       - agent_network
-    deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
+    #deploy:
+    #  mode: replicated
+    #  replicas: 1
+    #  placement:
+    #    constraints: [node.role == manager]
 
 
 networks:
