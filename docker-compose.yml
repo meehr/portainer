@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3'
 
 services:
   portainer:
@@ -8,15 +8,15 @@ services:
     volumes:
       - data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    #environment:
-    #  - VIRTUAL_HOST=portainer.phoenyx.me
-    #  - VIRTUAL_PORT=9000
+    environment:
+      - VIRTUAL_HOST=portainer.phoenyx.me
+      - VIRTUAL_PORT=9000
     #ports:
       #- 8000:8000
       #- 9443:9443
     networks:
       - nginx_proxy_frontend
-      #- proxy_backend
+      - nginx_proxy_backend
       - agent_network
     #deploy:
     #  mode: replicated
@@ -31,9 +31,9 @@ networks:
   nginx_proxy_frontend:
     # add this if the network is already existing!
     external: true
-  # nginx_proxy_backend:
+  nginx_proxy_backend:
     # add this if the network is already existing!
-    # external: true
+    external: true
 
 volumes:
    data:
