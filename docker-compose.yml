@@ -11,6 +11,12 @@ services:
     environment:
       - VIRTUAL_HOST=portainer.phoenyx.me
       - VIRTUAL_PORT=9000
+    #healthcheck:
+    #  test: curl --fail http://localhost:9000 || exit 1
+    #  interval: 300s
+    #  retries: 5
+    #  start_period: 20s
+    #  timeout: 10s
     #ports:
       #- 8000:8000
       #- 9443:9443
