@@ -28,7 +28,7 @@ services:
       - nginx_proxy_backend
       - agent_network
 networks:
-  #agent_network: #Nur für den Betrieb mit Agents notwendig
+  agent_network: #Nur für den Betrieb mit Agents notwendig
     #external: true
   nginx_proxy_frontend:
     # add this if the network is already existing!
