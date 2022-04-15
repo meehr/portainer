@@ -1,41 +1,34 @@
-version: '3'
+version: '3.9'
+
+volumes:
+  portainer-data:
 
 services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer.phoenyx.me
-    restart: always
-    #command: -H tcp://tasks.agent:9001 --tlsskipverify
+    restart: unless-stopped
     volumes:
-      - data:/data
+      - portainer-data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=portainer.phoenyx.me
       - VIRTUAL_PORT=9000
-    #healthcheck:
-    #  test: curl --fail http://localhost:9000 || exit 1
-    #  interval: 300s
-    #  retries: 5
-    #  start_period: 20s
-    #  timeout: 10s
-    #ports:
-      #- 8000:8000
-      #- 9443:9443
+    # healthcheck:
+    #   test: ['CMD', 'portainer', '--healthcheck']
+    #   interval: 300s
+    #   retries: 5
+    #   timeout: 10s
+    ports:
+      - 8000:8000
     networks:
       - nginx_proxy_frontend
       - nginx_proxy_backend
-      - agent_network
-
 
 networks:
-  agent_network:
-    #external: true
   nginx_proxy_frontend:
     # add this if the network is already existing!
     external: true
   nginx_proxy_backend:
     # add this if the network is already existing!
     external: true
-
-volumes:
-   data:
